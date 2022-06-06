@@ -3,7 +3,7 @@ const searchBtn = document.getElementById("search-btn"); // get the search butto
 
 const movies = []; // create a movies array
 
-const renderMovies = () => {
+const renderMovies = (filter = '') => {
   // render movies function
   const movieList = document.getElementById("movie-list"); // get the movie list
   if (movies.length === 0) {
@@ -16,11 +16,23 @@ const renderMovies = () => {
   }
   movieList.innerHTML = ""; // clear the movie list
 
-  movies.forEach((movie) => {
-    // for each movie
+  const filteredMovies = filter !== '' ? movies.filter(movie => movie.info.title.includes(filter)) : movies; // filter the movies
+
+
+  filteredMovies.forEach((movie) => {
+    // for each movie in the movies array
     const movieEl = document.createElement("li"); // create a new li element
-    movieEl.textContent = movie.info.title; // set the text content to the movie title
-    movieList.appendChild(movieEl); // append the movie to the movie list
+    const title = document.createElement("h2"); // create a new h2 element
+    const extra = document.createElement("span"); // create a new span element
+
+    title.textContent = movie.info.title; // set the title text content
+    extra.textContent = `${movie.info.extra.name}: ${movie.info.extra.value}`; // set the extra text content
+
+    movieEl.appendChild(title); // append the title to the li element
+    movieEl.appendChild(extra); // append the extra to the li element
+
+    movieList.appendChild(movieEl); // append the li element to the movie list
+    
   });
 };
 
@@ -54,10 +66,18 @@ const addMovieHandler = () => {
     id: Math.random().toString(), // set the id
   };
 
-  movies.push(newMovie); // push the new movie to the movies array
+  movies.unshift(newMovie); // push the new movie to the movies array
   console.log(movies); // log the movies array
   renderMovies(); // render the movies
 };
 
+
+const searchMovieHandler = () => {
+    const filterTerm = document.getElementById("filter-title").value; // get the filter term from the input
+    renderMovies(filterTerm); // render the movies
+
+}   
+
 // Event Listeners
 addMovieBtn.addEventListener("click", addMovieHandler); // add the add movie handler to the add movie button
+searchBtn.addEventListener("click",searchMovieHandler); // add the render movies handler to the search button
